@@ -22,7 +22,7 @@ export const getUser = async (req: FastifyRequest<{ Params: { uuid: string } }>,
 };
 
 export const getAllUsers = async (req: FastifyRequest, reply: FastifyReply) => {
-  const users = await userService.getAllUsers();
+  const users = await userService.getAllUsersFromAllNodes();
   reply.send(users);
 };
 

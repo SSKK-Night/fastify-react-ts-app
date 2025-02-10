@@ -1,5 +1,6 @@
 import { User } from '../../domain/entities/User';
 import { UserRepository } from '../repositories/userRepository';
+import { getAllNodeIds, getDatabaseByNodeId } from '../../infrastructure/database/prismaClient';
 
 const userRepository = new UserRepository();
 
@@ -24,8 +25,17 @@ export class UserService {
     return await userRepository.getUserById(uuid);
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return await userRepository.getAllUsers();
+  async getAllUsersFromAllNodes(): Promise<User[]> {
+    // すべてのノードIDを取得
+    const nodeIds = getAllNodeIds();
+
+    // すべてのノードの `user` テーブルからデータを取得
+    const usersFromNodes = await Promise.all(
+      nodeIds.map(nodeId => getDatabaseByNodeId(nodeId).user.findMany())
+    );
+
+    // 各ノードのデータを結合し、全ユーザーリストを返す
+    return usersFromNodes.flat();
   }
 
   async updateUser(uuid: string, data: Partial<User>): Promise<User | null> {
