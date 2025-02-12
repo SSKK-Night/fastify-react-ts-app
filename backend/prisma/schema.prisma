@@ -2,19 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db1 {
+datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL_NODE1")
-}
+  url      = env("DATABASE_URL")
 
-datasource db2 {
-  provider = "postgresql"
-  url      = env("DATABASE_URL_NODE2")
-}
-
-datasource db3 {
-  provider = "postgresql"
-  url      = env("DATABASE_URL_NODE3")
+  shadowDatabaseUrl = "postgresql://fastify_user:fastify@localhost:5432/fastify_shadow"
 }
 
 model User {
@@ -29,5 +21,4 @@ model User {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 
-  @@unique([email])
 }
