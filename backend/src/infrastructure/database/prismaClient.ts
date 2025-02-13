@@ -15,13 +15,15 @@ nodeIds.forEach(nodeId => {
   }
 });
 
-// **ノードID に応じて適切なデータベースに接続する関数**
-export const getDatabaseByNodeId = (nodeid: number): PrismaClient => {
-  return dbConnections[nodeid] ?? (() => { throw new Error(`Invalid nodeid: ${nodeid}`) })();
-};
-
-// **全ノードのIDを取得する関数**
+// **全ノードのIDを取得**
 export const getAllNodeIds = (): number[] => Object.keys(dbConnections).map(Number);
 
-// デフォルトのノードを node1 に設定
-export const prisma = dbConnections[1];
+// **ノードID に応じて適切なデータベースに接続**
+export const getDatabaseByNodeId = (nodeid: number): PrismaClient => {
+  const db = dbConnections[nodeid];
+  if (!db) throw new Error(`Invalid nodeid: ${nodeid}`);
+  return db;
+};
+
+// **デフォルトノード**
+export const prisma: PrismaClient = dbConnections[1];

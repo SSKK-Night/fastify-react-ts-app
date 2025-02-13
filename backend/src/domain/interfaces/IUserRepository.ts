@@ -6,4 +6,5 @@ export interface IUserRepository {
   getAllUsers(): Promise<User[]>;
   updateUser(uuid: string, data: Partial<User>): Promise<User | null>;
   deleteUser(uuid: string): Promise<void>;
+  getUserCountsPerNode(): Promise<Record<number, number>>;
 }

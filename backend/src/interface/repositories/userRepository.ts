@@ -1,6 +1,6 @@
 import { IUserRepository } from '../../domain/interfaces/IUserRepository';
 import { User } from '../../domain/entities/User';
-import { prisma } from '../../infrastructure/database/prismaClient';
+import { prisma, getAllNodeIds, getDatabaseByNodeId  } from '../../infrastructure/database/prismaClient';
 
 export class UserRepository implements IUserRepository {
   async createUser(user: User): Promise<User> {
@@ -31,4 +31,22 @@ export class UserRepository implements IUserRepository {
       data: { delete_flag: true }
     });
   }
+
+  async getUserCountsPerNode(): Promise<Record<number, number>> {
+    const nodeIds = getAllNodeIds();
+    const userCounts: Record<number, number> = {};
+
+    for (const nodeId of nodeIds) {
+      try {
+        const db = getDatabaseByNodeId(nodeId);
+        const count: number = await db.user.count(); // ✅ 型を明示
+        userCounts[nodeId] = count;
+      } catch (error) {
+        console.error(`❌ ユーザー数取得失敗（Node ${nodeId}）:`, error);
+        userCounts[nodeId] = Infinity;
+      }
+    }
+
+    return userCounts;
+}
 }
