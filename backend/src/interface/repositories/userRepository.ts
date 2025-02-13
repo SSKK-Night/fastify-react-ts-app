@@ -39,10 +39,10 @@ export class UserRepository implements IUserRepository {
     for (const nodeId of nodeIds) {
       try {
         const db = getDatabaseByNodeId(nodeId);
-        const count: number = await db.user.count(); // ✅ 型を明示
+        const count: number = await db.user.count(); // 型を明示
         userCounts[nodeId] = count;
       } catch (error) {
-        console.error(`❌ ユーザー数取得失敗（Node ${nodeId}）:`, error);
+        console.error(`ユーザー数取得失敗（Node ${nodeId}）:`, error);
         userCounts[nodeId] = Infinity;
       }
     }

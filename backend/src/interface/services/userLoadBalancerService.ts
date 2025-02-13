@@ -3,7 +3,7 @@ import { UserRepository } from "../repositories/userRepository";
 
 const userRepository = new UserRepository();
 
-// 🔄 ユーザー数をRedisに更新
+//  ユーザー数をRedisに更新
 export async function updateUserCounts() {
     const nodeUserCounts = await userRepository.getUserCountsPerNode();
 
@@ -14,7 +14,7 @@ export async function updateUserCounts() {
     }
 }
 
-// 🔍 ユーザー数が最も少ないノードを取得
+// ユーザー数が最も少ないノードを取得
 export async function getLeastLoadedNode(): Promise<string> {
     const nodes = ["node1", "node2", "node3"];
     let minCount = Infinity;
