@@ -3,12 +3,6 @@ import { User } from '../../domain/entities/User';
 import { prisma, getAllNodeIds, getDatabaseByNodeId  } from '../../infrastructure/database/prismaClient';
 
 export class UserRepository implements IUserRepository {
-  // async createUser(user: User): Promise<User> {
-  //   const newUser = await prisma.user.create({
-  //     data: user
-  //   });
-  //   return newUser;
-  // }
 
   async createUser(data: Omit<User, 'uuid' | 'created_at' | 'updated_at'>): Promise<User> {
     const db = getDatabaseByNodeId(data.nodeid); // 適切なノードのDBに接続

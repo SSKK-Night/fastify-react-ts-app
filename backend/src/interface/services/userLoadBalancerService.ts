@@ -13,9 +13,9 @@ export async function updateUserCounts() {
 
         if (typeof count === "number") {
             await redis.set(`user_count:${node}`, count.toString());
-            console.log(`✅ Redis に保存完了: user_count:${node} = ${count}`);
+            console.log(`Redis に保存完了: user_count:${node} = ${count}`);
         } else {
-            console.error(`❌ Redis に保存できない値: node ${node} - count ${count}`);
+            console.error(`Redis に保存できない値: node ${node} - count ${count}`);
         }
     }
 }
@@ -40,7 +40,7 @@ export async function getLeastLoadedNode(): Promise<string> {
         }
     }
 
-    console.log(`✅ 選択されたノード: node${selectedNode}（ユーザー数: ${minCount}）`);
+    console.log(`選択されたノード: node${selectedNode}（ユーザー数: ${minCount}）`);
     return `node${selectedNode}`; // "node1" のような形式に戻す
 }
 
