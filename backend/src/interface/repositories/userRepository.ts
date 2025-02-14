@@ -6,19 +6,35 @@ import { getLeastLoadedNode } from '../../util/leastLoadedNode';
 export class UserRepository implements IUserRepository {
 
   async createUser(data: Omit<User, 'uuid' | 'created_at' | 'updated_at' | 'nodeid'>): Promise<User> {
-    const leastLoadedNode = await getLeastLoadedNode(); // ユーザー数が最も少ないノードを取得
-    const nodeId = parseInt(leastLoadedNode.replace("node", "")); // ノードIDを数値に変換
+    try {
+        const leastLoadedNode = await getLeastLoadedNode(); // ユーザー数が最も少ないノードを取得
+        if (!leastLoadedNode) {
+            throw new Error("ノードの選択に失敗しました");
+        }
 
-    // データベースインスタンスを取得
-    const db = getDatabaseByNodeId(nodeId);
+        const nodeId = parseInt(leastLoadedNode.replace("node", ""), 10);
+        if (isNaN(nodeId)) {
+            throw new Error(`ノードIDの変換に失敗: ${leastLoadedNode}`);
+        }
 
-    return await db.user.create({
-      data: {
-        ...data, // 受け取ったデータをそのままセット
-        nodeid: nodeId, // ノードIDを補完
-      },
-    });
-  }
+        const db = getDatabaseByNodeId(nodeId);
+        if (!db) {
+            throw new Error(`データベース接続が見つかりません (nodeId: ${nodeId})`);
+        }
+
+        console.log(`ユーザーをノード ${nodeId} に登録`);
+
+        return await db.user.create({
+            data: {
+                ...data,
+                nodeid: nodeId, // ノードIDを補完
+            },
+        });
+    } catch (error) {
+        console.error("createUser エラー:", error);
+        throw new Error("ユーザー作成に失敗しました");
+    }
+}
 
   async getUserById(uuid: string): Promise<User | null> {
     return await prisma.user.findUnique({ where: { uuid } });
