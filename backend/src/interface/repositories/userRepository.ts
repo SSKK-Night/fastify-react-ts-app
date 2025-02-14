@@ -1,15 +1,21 @@
 import { IUserRepository } from '../../domain/interfaces/IUserRepository';
 import { User } from '../../domain/entities/User';
 import { prisma, getAllNodeIds, getDatabaseByNodeId  } from '../../infrastructure/database/prismaClient';
+import { getLeastLoadedNode } from '../../util/leastLoadedNode';
 
 export class UserRepository implements IUserRepository {
 
-  async createUser(data: Omit<User, 'uuid' | 'created_at' | 'updated_at'>): Promise<User> {
-    const db = getDatabaseByNodeId(data.nodeid); // 適切なノードのDBに接続
+  async createUser(data: Omit<User, 'uuid' | 'created_at' | 'updated_at' | 'nodeid'>): Promise<User> {
+    const leastLoadedNode = await getLeastLoadedNode(); // ユーザー数が最も少ないノードを取得
+    const nodeId = parseInt(leastLoadedNode.replace("node", "")); // ノードIDを数値に変換
+
+    // データベースインスタンスを取得
+    const db = getDatabaseByNodeId(nodeId);
 
     return await db.user.create({
       data: {
         ...data, // 受け取ったデータをそのままセット
+        nodeid: nodeId, // ノードIDを補完
       },
     });
   }
