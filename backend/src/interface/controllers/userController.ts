@@ -26,14 +26,22 @@ export const getAllUsers = async (req: FastifyRequest, reply: FastifyReply) => {
   reply.send(users);
 };
 
-export const updateUser = async (req: FastifyRequest<{ Params: { uuid: string }; Body: UserInput }>, reply: FastifyReply) => {
-    try {
-      const updatedUser = await userService.updateUser(req.params.uuid, req.body);
-      updatedUser ? reply.send(updatedUser) : reply.status(404).send({ error: 'User not found' });
-    } catch (error) {
-      reply.status(500).send({ error: 'Internal Server Error' });
+export const updateUser = async (
+  req: FastifyRequest<{ Params: { nodeid: string; uuid: string }; Body: Partial<User> }>,
+  reply: FastifyReply
+) => {
+  try {
+    const nodeid = parseInt(req.params.nodeid, 10); // `nodeid` をリクエストURLから取得
+    if (isNaN(nodeid)) {
+      return reply.status(400).send({ error: 'Invalid nodeid' });
     }
-  };
+
+    const updatedUser = await userService.updateUser(nodeid, req.params.uuid, req.body);
+    updatedUser ? reply.send(updatedUser) : reply.status(404).send({ error: 'User not found' });
+  } catch (error) {
+    reply.status(500).send({ error: 'Internal Server Error' });
+  }
+};
 
 export const deleteUser = async (req: FastifyRequest<{ Params: { uuid: string } }>, reply: FastifyReply) => {
   await userService.deleteUser(req.params.uuid);

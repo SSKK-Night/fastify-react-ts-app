@@ -44,7 +44,22 @@ export class UserRepository implements IUserRepository {
     return await prisma.user.findMany();
   }
 
-  async updateUser(uuid: string, data: Partial<User>): Promise<User | null> {
+  private async findNodeIdByUuid(uuid: string): Promise<number | null> {
+    for (const nodeid of getAllNodeIds()) {
+      const prisma = getDatabaseByNodeId(nodeid);
+      const user = await prisma.user.findUnique({
+        where: { uuid },
+        select: { nodeid: true }
+      });
+
+      if (user) return user.nodeid; // 見つかったら `nodeid` を返す
+    }
+    return null; // どのノードにも存在しない場合
+  }
+
+  async updateUser(uuid: string, nodeId: number, data: Partial<User>): Promise<User | null> {
+
+    const prisma = getDatabaseByNodeId(nodeId);
     return await prisma.user.update({
       where: { uuid },
       data

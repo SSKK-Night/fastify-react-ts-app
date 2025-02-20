@@ -33,8 +33,10 @@ export class UserService {
     return usersFromNodes.flat();
   }
 
-  async updateUser(uuid: string, data: Partial<User>): Promise<User | null> {
-    return await userRepository.updateUser(uuid, data);
+  async updateUser(nodeId: number, uuid: string, data: Partial<User>): Promise<User | null> {
+
+    // 2️⃣ `uuid` のユーザー情報を更新
+    return await userRepository.updateUser(uuid, nodeId, data);
   }
 
   async deleteUser(uuid: string): Promise<void> {

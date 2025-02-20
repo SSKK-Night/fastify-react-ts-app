@@ -15,6 +15,8 @@ nodeIds.forEach(nodeId => {
   }
 });
 
+
+
 // **全ノードのIDを取得**
 export const getAllNodeIds = (): number[] => Object.keys(dbConnections).map(Number);
 
