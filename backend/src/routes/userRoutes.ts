@@ -6,5 +6,5 @@ export async function userRoutes(fastify: FastifyInstance) {
   fastify.get('/users', getAllUsers);
   fastify.get('/users/:uuid', getUser);
   fastify.patch('/users/:nodeid/:uuid', updateUser);
-  fastify.delete('/users/:uuid', deleteUser);
+  fastify.delete('/users/:nodeid/:uuid', deleteUser);
 }

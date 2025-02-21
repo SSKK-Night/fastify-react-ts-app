@@ -43,7 +43,19 @@ export const updateUser = async (
   }
 };
 
-export const deleteUser = async (req: FastifyRequest<{ Params: { uuid: string } }>, reply: FastifyReply) => {
-  await userService.deleteUser(req.params.uuid);
-  reply.send({ message: 'User deleted' });
+export const deleteUser = async (
+  req: FastifyRequest<{ Params: { nodeid: string; uuid: string } }>,
+  reply: FastifyReply
+) => {
+  try {
+    const nodeid = parseInt(req.params.nodeid, 10); // `nodeid` を取得
+    if (isNaN(nodeid)) {
+      return reply.status(400).send({ error: 'Invalid nodeid' });
+    }
+
+    await userService.deleteUser(nodeid, req.params.uuid);
+    reply.send({ message: 'User deleted' });
+  } catch (error) {
+    reply.status(500).send({ error: 'Internal Server Error' });
+  }
 };

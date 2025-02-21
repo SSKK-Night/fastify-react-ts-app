@@ -66,7 +66,8 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async deleteUser(uuid: string): Promise<void> {
+  async deleteUser(uuid: string, nodeId: number): Promise<void> {
+    const prisma = getDatabaseByNodeId(nodeId);
     await prisma.user.update({
       where: { uuid },
       data: { delete_flag: true }
