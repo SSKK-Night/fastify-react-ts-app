@@ -1,5 +1,6 @@
 import { fastify } from './infrastructure/webserver/fastify';
 import { userRoutes } from './routes/userRoutes';
+import { taskGenreRoutes } from './routes/taskGenreRoutes';
 import { config } from './config/env';
 import cron from "node-cron";
 import { updateUserCounts } from "./interface/services/userLoadBalancerService";
@@ -9,7 +10,7 @@ import { getLeastLoadedNode } from "./util/leastLoadedNode";
 const start = async () => {
   try {
     // ルートを登録
-    fastify.register(userRoutes);
+    fastify.register(userRoutes, taskGenreRoutes);
 
     // サーバー起動
     await fastify.listen({ port: Number(config.port), host: '0.0.0.0' });
