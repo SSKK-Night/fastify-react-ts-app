@@ -15,3 +15,12 @@ export const createTaskGenre = async (
     reply.status(500).send({ error: 'Internal Server Error' });
   }
 };
+
+export const getAllTaskGenres = async (req: FastifyRequest, reply: FastifyReply) => {
+  try {
+    const taskGenres = await taskGenreService.getAllTaskGenres();
+    reply.send(taskGenres);
+  } catch (error) {
+    reply.status(500).send({ error: 'Internal Server Error' });
+  }
+};

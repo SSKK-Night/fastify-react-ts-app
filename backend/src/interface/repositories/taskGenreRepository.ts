@@ -1,5 +1,6 @@
 import { ITaskGenreRepository } from '../../domain/interfaces/ITaskGenreRepository';
 import { getAllNodeIds, getDatabaseByNodeId } from '../../infrastructure/database/prismaClient';
+import { TaskGenre } from '../../domain/entities/TaskGenre';
 
 export class TaskGenreRepository implements ITaskGenreRepository {
   async createTaskGenre(name: string, description?: string): Promise<void> {
@@ -22,5 +23,15 @@ export class TaskGenreRepository implements ITaskGenreRepository {
       console.error(`TaskGenre "${name}" の登録中にエラー発生:`, error);
       throw new Error("TaskGenre の作成に失敗しました");
     }
+  }
+
+  async getAllTaskGenres(): Promise<TaskGenre[]> {
+    const prisma = getDatabaseByNodeId(1);
+    const rawGenres = await prisma.taskGenre.findMany();
+
+    return rawGenres.map((genre) => ({
+      ...genre,
+      description: genre.description ?? "", 
+    }));
   }
 }
