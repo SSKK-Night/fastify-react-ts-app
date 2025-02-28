@@ -31,3 +31,17 @@ model TaskGenre {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }
+
+model Admin {
+  id             Int      @id @default(autoincrement()) // 自動インクリメントの主キー
+  name           String
+  email          String   @unique
+  password       String
+  role           String
+  isActive       Boolean  @default(true)
+  last_login_at  DateTime?
+  failed_attempts Int     @default(0)
+  locked_until   DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+}
