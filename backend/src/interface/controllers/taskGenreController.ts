@@ -24,3 +24,20 @@ export const getAllTaskGenres = async (req: FastifyRequest, reply: FastifyReply)
     reply.status(500).send({ error: 'Internal Server Error' });
   }
 };
+
+export const updateTaskGenre = async (
+  req: FastifyRequest<{ Params: { id: string }; Body: { name?: string; description?: string } }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) {
+      return reply.status(400).send({ error: 'Invalid TaskGenre ID' });
+    }
+
+    await taskGenreService.updateTaskGenre(id, req.body.name, req.body.description);
+    reply.send({ message: 'TaskGenre updated successfully' });
+  } catch (error) {
+    reply.status(500).send({ error: 'Internal Server Error' });
+  }
+};

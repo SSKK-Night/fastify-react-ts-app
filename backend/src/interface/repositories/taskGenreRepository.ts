@@ -34,4 +34,27 @@ export class TaskGenreRepository implements ITaskGenreRepository {
       description: genre.description ?? "", 
     }));
   }
+
+  async updateTaskGenre(id: number, name?: string, description?: string): Promise<void> {
+    const nodeIds = getAllNodeIds(); // 全ノードの ID を取得
+
+    await Promise.all(
+      nodeIds.map(async (nodeId) => {
+        const prisma = getDatabaseByNodeId(nodeId);
+        try {
+          await prisma.taskGenre.update({
+            where: { id },
+            data: {
+              name,
+              description,
+              updated_at: new Date(),
+            },
+          });
+          console.log(`TaskGenre ID: ${id} をノード ${nodeId} で更新しました`);
+        } catch (error: any) {
+          console.error(`ノード ${nodeId} で TaskGenre 更新エラー:`, error);
+        }
+      })
+    );
+  }
 }

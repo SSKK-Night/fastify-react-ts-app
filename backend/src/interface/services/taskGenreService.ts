@@ -11,4 +11,8 @@ export class TaskGenreService {
   async getAllTaskGenres(): Promise<TaskGenre[]> {
     return await taskGenreRepository.getAllTaskGenres();
   }
+
+  async updateTaskGenre(id: number, name?: string, description?: string): Promise<void> {
+    await taskGenreRepository.updateTaskGenre(id, name, description);
+  }
 }
