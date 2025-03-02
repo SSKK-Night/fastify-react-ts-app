@@ -1,7 +1,9 @@
 import { redis } from "../infrastructure/database/redisClient";
+import { getAllNodeIds } from "../infrastructure/database/prismaClient";
+
 
 export async function getLeastLoadedNode(): Promise<string> {
-    const nodes = ["1", "2", "3"];
+    const nodes = getAllNodeIds().map(String);;
     let minCount = Infinity;
     let selectedNode = "1";
 
