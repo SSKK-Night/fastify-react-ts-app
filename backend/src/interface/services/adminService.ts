@@ -12,6 +12,10 @@ export class AdminService {
     await this.adminRepository.createAdmin({ name, email, password, role, isActive: true, });
   }
 
+  async getAllAdmins(): Promise<Admin[]> {
+    return await this.adminRepository.getAllAdmins();
+  }
+
 //   async getAdminById(id: number): Promise<Admin | null> {
 //     return await this.adminRepository.getAdminById(id);
 //   }

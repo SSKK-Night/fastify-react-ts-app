@@ -34,6 +34,11 @@ export class AdminRepository implements IAdminRepository {
     );
   }
 
+  async getAllAdmins(): Promise<Admin[]> {
+    const prisma = getDatabaseByNodeId(1);
+    return await prisma.admin.findMany();
+  }
+
 //   async getAdminById(id: number): Promise<Admin | null> {
 //     const prisma = getDatabaseByNodeId(1);
 //     return await prisma.admin.findUnique({ where: { id } });

@@ -14,3 +14,12 @@ export const createAdmin = async (
     reply.status(500).send({ error: 'Internal Server Error' });
   }
 };
+
+export const getAllAdmins = async (req: FastifyRequest, reply: FastifyReply) => {
+  try {
+    const admins = await adminService.getAllAdmins();
+    reply.send(admins);
+  } catch (error) {
+    reply.status(500).send({ error: "Internal Server Error" });
+  }
+};

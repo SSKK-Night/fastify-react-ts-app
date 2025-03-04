@@ -39,9 +39,9 @@ model Admin {
   password       String
   role           String
   isActive       Boolean  @default(true)
-  last_login_at  DateTime?
+  last_login_at  DateTime?　@default(now())
   failed_attempts Int     @default(0)
-  locked_until   DateTime?
+  locked_until   DateTime?　@default(now())
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
 }
