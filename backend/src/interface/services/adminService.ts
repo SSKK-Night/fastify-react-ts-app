@@ -16,6 +16,10 @@ export class AdminService {
     return await this.adminRepository.getAllAdmins();
   }
 
+  async updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null> {
+    return await this.adminRepository.updateAdmin(id, data);
+  }
+
 //   async getAdminById(id: number): Promise<Admin | null> {
 //     return await this.adminRepository.getAdminById(id);
 //   }

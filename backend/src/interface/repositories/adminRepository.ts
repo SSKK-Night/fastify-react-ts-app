@@ -39,6 +39,37 @@ export class AdminRepository implements IAdminRepository {
     return await prisma.admin.findMany();
   }
 
+  async updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null> {
+    // パスワードを編集対象から除外
+    if ('password' in data) {
+      delete data.password;
+    }
+
+    const nodeIds = getAllNodeIds(); // 全ノードを取得
+
+    let updatedAdmin: Admin | null = null;
+
+    // すべてのノードで `admin` を更新
+    for (const nodeId of nodeIds) {
+      const prisma = getDatabaseByNodeId(nodeId);
+      try {
+        const admin = await prisma.admin.update({
+          where: { id },
+          data,
+        });
+
+        // 1つのノードの更新結果を格納
+        if (!updatedAdmin) {
+          updatedAdmin = admin;
+        }
+      } catch (error) {
+        console.error(`ノード ${nodeId} の管理者更新に失敗:`, error);
+      }
+    }
+
+    return updatedAdmin;
+  }
+
 //   async getAdminById(id: number): Promise<Admin | null> {
 //     const prisma = getDatabaseByNodeId(1);
 //     return await prisma.admin.findUnique({ where: { id } });
