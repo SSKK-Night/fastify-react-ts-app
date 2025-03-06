@@ -70,6 +70,26 @@ export class AdminRepository implements IAdminRepository {
     return updatedAdmin;
   }
 
+  async updatePassword(id: number, hashedPassword: string): Promise<boolean> {
+    const nodeIds = getAllNodeIds(); // すべてのノードIDを取得
+
+    try {
+      await Promise.all(
+        nodeIds.map(async (nodeId) => {
+          const prisma = getDatabaseByNodeId(nodeId);
+          await prisma.admin.update({
+            where: { id },
+            data: { password: hashedPassword, updated_at: new Date() }
+          });
+        })
+      );
+      return true;
+    } catch (error) {
+      console.error("Admin パスワード更新エラー:", error);
+      return false;
+    }
+  }
+
 //   async getAdminById(id: number): Promise<Admin | null> {
 //     const prisma = getDatabaseByNodeId(1);
 //     return await prisma.admin.findUnique({ where: { id } });

@@ -6,4 +6,5 @@ export interface IAdminRepository {
 //   getAdminById(id: number): Promise<Admin | null>;
 //   getAdminByEmail(email: string): Promise<Admin | null>;
   updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null>;
+  updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null>
 }

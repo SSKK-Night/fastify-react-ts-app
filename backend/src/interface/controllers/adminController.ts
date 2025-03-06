@@ -41,3 +41,32 @@ export const updateAdmin = async (
     reply.status(500).send({ error: 'Internal Server Error' });
   }
 };
+
+export const changePassword = async (
+  req: FastifyRequest<{ Params: { id: string }; Body: { newPassword: string; confirmPassword: string } }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { newPassword, confirmPassword } = req.body;
+    const id = parseInt(req.params.id, 10);
+
+    if (isNaN(id)) {
+      return reply.status(400).send({ error: "Invalid Admin ID" });
+    }
+
+    // ❶ パスワードが一致するかチェック
+    if (newPassword !== confirmPassword) {
+      return reply.status(400).send({ error: "Passwords do not match" });
+    }
+
+    // ❷ Adminのパスワードを変更（全ノード）
+    const success = await adminService.changePassword(id, newPassword);
+    if (!success) {
+      return reply.status(500).send({ error: "Failed to update password" });
+    }
+
+    return reply.send({ message: "Password changed successfully on all nodes" });
+  } catch (error) {
+    reply.status(500).send({ error: "Internal Server Error" });
+  }
+};

@@ -1,5 +1,6 @@
 import { AdminRepository } from '../repositories/adminRepository';
 import { Admin } from '../../domain/entities/Admin';
+import bcrypt from 'bcrypt';
 
 export class AdminService {
   private adminRepository: AdminRepository;
@@ -18,6 +19,13 @@ export class AdminService {
 
   async updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null> {
     return await this.adminRepository.updateAdmin(id, data);
+  }
+
+  async changePassword(id: number, newPassword: string): Promise<boolean> {
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    return await this.adminRepository.updatePassword(id, hashedPassword);
   }
 
 //   async getAdminById(id: number): Promise<Admin | null> {
