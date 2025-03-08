@@ -90,34 +90,24 @@ export class AdminRepository implements IAdminRepository {
     }
   }
 
-//   async getAdminById(id: number): Promise<Admin | null> {
-//     const prisma = getDatabaseByNodeId(1);
-//     return await prisma.admin.findUnique({ where: { id } });
-//   }
+  async deleteAdmin(id: number): Promise<boolean> {
+    const nodeIds = getAllNodeIds(); // すべてのノードIDを取得
 
-//   async getAdminByEmail(email: string): Promise<Admin | null> {
-//     const prisma = getDatabaseByNodeId(1);
-//     return await prisma.admin.findUnique({ where: { email } });
-//   }
+    try {
+      await Promise.all(
+        nodeIds.map(async (nodeId) => {
+          const prisma = getDatabaseByNodeId(nodeId);
+          await prisma.admin.delete({
+            where: { id }
+          });
+        })
+      );
+      return true;
+    } catch (error) {
+      console.error("Admin 削除エラー:", error);
+      return false;
+    }
+  }
 
-//   async updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null> {
-//     const nodeIds = getAllNodeIds();
-//     let updatedAdmin: Admin | null = null;
 
-//     await Promise.all(
-//       nodeIds.map(async (nodeId) => {
-//         const prisma = getDatabaseByNodeId(nodeId);
-//         try {
-//           const admin = await prisma.admin.update({
-//             where: { id },
-//             data,
-//           });
-//           if (!updatedAdmin) updatedAdmin = admin; // 最初の成功したデータを返す
-//         } catch (error: any) {
-//           console.error(`ノード ${nodeId} で Admin 更新エラー:`, error);
-//         }
-//       })
-//     );
-//     return updatedAdmin;
-//   }
 }

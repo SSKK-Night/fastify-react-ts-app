@@ -1,9 +1,10 @@
-import { FastifyInstance } from 'fastify';
-import { createAdmin, getAllAdmins, updateAdmin, changePassword } from '../interface/controllers/adminController';
+import { FastifyInstance } from "fastify";
+import { adminController } from "../interface/controllers/adminController";
 
 export async function adminRoutes(fastify: FastifyInstance) {
-  fastify.post('/admins', createAdmin);
-  fastify.get("/admins", getAllAdmins);
-  fastify.put('/admins/:id', updateAdmin);
-  fastify.put("/admins/:id/password", changePassword);
+  fastify.post("/admins", adminController.createAdmin);
+  fastify.get("/admins", adminController.getAllAdmins);
+  fastify.put("/admins/:id", adminController.updateAdmin);
+  fastify.put("/admins/:id/password", adminController.changePassword);
+  fastify.delete("/admins/:id", adminController.deleteAdmin);
 }

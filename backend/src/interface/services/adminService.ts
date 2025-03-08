@@ -28,15 +28,12 @@ export class AdminService {
     return await this.adminRepository.updatePassword(id, hashedPassword);
   }
 
-//   async getAdminById(id: number): Promise<Admin | null> {
-//     return await this.adminRepository.getAdminById(id);
-//   }
+  async deleteAdmin(id: number): Promise<boolean> {
+    const adminRepository = new AdminRepository();
+    
+    // すべてのノードの `Admin` を非アクティブ化
+    return await adminRepository.deleteAdmin(id);
+  }
 
-//   async getAdminByEmail(email: string): Promise<Admin | null> {
-//     return await this.adminRepository.getAdminByEmail(email);
-//   }
 
-//   async updateAdmin(id: number, data: Partial<Admin>): Promise<Admin | null> {
-//     return await this.adminRepository.updateAdmin(id, data);
-//   }
 }
