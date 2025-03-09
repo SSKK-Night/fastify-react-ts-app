@@ -6,7 +6,7 @@ type FieldType = "input" | "textarea";
 type FormFieldProps = {
   label: string;
   name: string;
-  type: FieldType; // `input` か `textarea` を指定
+  type: FieldType;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
