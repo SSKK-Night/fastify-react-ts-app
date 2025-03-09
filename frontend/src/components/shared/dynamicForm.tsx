@@ -1,56 +1,67 @@
-// src/views/Shared/DynamicForm.tsx
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import FormField from "./formField";
-import SelectField from "./selectField"; // ✅ 新しく作成する `SelectField.tsx`
+import SelectField from "./selectField";
 
 type FieldConfig = {
   name: string;
   label: string;
   type: "input" | "textarea" | "select"; // ✅ `select` を追加
   options?: { value: string; label: string }[]; // ✅ `select` の選択肢用
+  validation?: z.ZodTypeAny; // ✅ バリデーションを追加
 };
 
 type DynamicFormProps = {
   fields: FieldConfig[]; // 入力フィールドの設定
-  onSubmit: (formData: Record<string, string>) => void; // 送信時の処理
-  initialState?: Record<string, string>; // 初期値
+  onSubmit: (formData: Record<string, any>) => void; // 送信時の処理
+  initialState?: Record<string, any>; // 初期値
 };
 
 const DynamicForm: React.FC<DynamicFormProps> = ({ fields, onSubmit, initialState = {} }) => {
-  const [formData, setFormData] = useState<Record<string, string>>(initialState);
+  // ✅ `Zod` を使ってスキーマを作成
+  const schema = z.object(
+    fields.reduce((acc, field) => {
+      if (field.validation) {
+        acc[field.name] = field.validation;
+      }
+      return acc;
+    }, {} as Record<string, z.ZodTypeAny>)
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialState,
+    resolver: zodResolver(schema),
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {fields.map((field) => {
+        const errorMessage = errors[field.name]?.message ? String(errors[field.name]?.message) : undefined;
+
         if (field.type === "select") {
           return (
             <SelectField
               key={field.name}
-              name={field.name}
               label={field.label}
               options={field.options || []}
-              value={formData[field.name] || ""}
-              onChange={handleChange}
+              error={errorMessage}
+              {...register(field.name)} // ✅ nameを明示的に渡さない
             />
           );
         }
         return (
           <FormField
             key={field.name}
-            name={field.name}
             label={field.label}
             type={field.type}
-            value={formData[field.name] || ""}
-            onChange={handleChange}
+            error={errorMessage}
+            {...register(field.name)} // ✅ nameを明示的に渡さない
           />
         );
       })}
