@@ -7,7 +7,7 @@ const basicPassword = process.env.React_APP_BASIC_USER
 const isProduction = window.location.hostname !== 'localhost'; // "localhost"なら開発環境
 
 const getBaseUrl = () => {
-  return isProduction ? '/api' : 'http://localhost:3000'; // 本番環境なら '/api'、開発環境ならポート付きのURL
+  return isProduction ? '/api' : 'http://127.0.0.1:5000'; // 本番環境なら '/api'、開発環境ならポート付きのURL
 };
 
 // Basic認証ヘッダーを本番環境でのみ返す
